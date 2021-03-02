@@ -1,0 +1,174 @@
+""""""""""文件类型侦测""""""""""
+" 开启文件类型侦测
+filetype on
+" 根据侦测到的不同类型加载对应的插件
+filetype plugin on
+
+""""""""""立即生效""""""""""
+" 让配置变更立即生效
+autocmd BufWritePost ~/.vimrc source ~/.vimrc
+
+""""""""""搜索、命令补全""""""""""
+" 开启实时搜索功能
+set incsearch
+" 搜索时大小写不敏感
+set ignorecase
+" 关闭兼容模式
+set nocompatible
+set backspace=indent,eol,start
+" vim 自身命令行模式智能补全
+set wildmenu
+
+""""""""""配色""""""""""""""""""""""""""""""
+set t_Co=256
+
+""""""""""显示""""""""""
+" 总是显示状态栏
+set laststatus=2
+" 显示光标当前位置
+set ruler
+" 开启行号显示
+set number
+" 高亮显示当前行/列
+set cursorline
+" set cursorcolumn
+" 高亮显示搜索结果
+set hlsearch
+" 开启语法高亮功能
+syntax enable
+" 允许用指定语法高亮配色方案替换默认方案
+syntax on
+" 高亮显示匹配的括号
+set showmatch
+" 匹配括号高亮的时间（单位是十分之一秒）
+set matchtime=1
+set fillchars+=vert:\
+
+""""""""""缩进""""""""""
+" 自适应不同语言的智能缩进
+filetype indent on
+" 将 tab 转化为空格
+set expandtab
+" 设置 tab 占用空格数
+set tabstop=4
+" 设置格式化时 tab 占用空格数 < >
+set shiftwidth=4
+" 让 vim 把连续数量的空格视为一个空格
+set softtabstop=4
+" 显示 tab 和空格
+set list
+set listchars=tab:\|-,trail:=,extends:>,precedes:<
+
+""""""""""其他""""""""""
+" 禁止折行
+" set nowrap
+" 定义快捷键的前缀，即<Leader>
+let mapleader=";"
+" 保持光标上下最少行数
+set scrolloff=1
+
+
+""""""""""vundle 插件管理""""""""""
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+" vundle 管理的插件列表必须位于 vundle#begin() 和 vundle#end() 之间
+call vundle#begin()
+" vundle
+Plugin 'VundleVim/Vundle.vim'
+"""""状态栏美化插件"""""
+"Plugin 'Lokaltog/powerline'
+" 设置状态栏主题风格
+"let g:Powerline_colorscheme='solarized256'
+
+"""""缩进关联插件"""""
+Plugin 'nathanaelkane/vim-indent-guides'
+" 随 vim 自启动
+let g:indent_guides_enable_on_vim_startup=0
+" 从第二层开始可视化显示缩进
+let g:indent_guides_start_level=2
+" 色块宽度
+let g:indent_guides_guide_size=1
+" 快捷键 i 开/关缩进可视化
+:nmap <silent> <Leader>i <Plug>IndentGuidesToggle
+
+"""""快速注释, <leader>cc 注释, <leader>cu 取消"""""
+Plugin 'scrooloose/nerdcommenter'
+
+"""""智能提示插件"""""
+Plugin 'davidhalter/jedi-vim'
+" 关闭文档字符串窗口
+"autocmd FileType python setlocal completeopt-=preview
+
+"""""缩进线插件"""""
+Plugin 'Yggdroot/indentLine'
+
+"""""vim 界面美化插件"""""
+Plugin 'vim-airline/vim-airline'
+" 开启 tabline
+let g:airline#extensions#tabline#enabled = 1
+" 使用powerline打过补丁的字体
+let g:airline_powerline_fonts = 1
+" tabline中当前buffer两端的分隔字符
+"let g:airline#extensions#tabline#left_sep = ' '
+" tabline中未激活buffer两端的分隔字符
+let g:airline#extensions#tabline#left_alt_sep = ' '
+" tabline中buffer显示编号
+let g:airline#extensions#tabline#buffer_nr_show = 1
+
+"""""缩进提示线插件"""""
+"Plugin 'indentLine.vim'
+
+" 语法检查
+"Plugin 'vim-syntastic/syntastic'
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 1
+let g:syntastic_enable_signs = 1
+let g:syntastic_error_symbol='✗'
+"let g:syntastic_warning_symbol='►'
+
+"""""配色方案"""""
+Plugin 'the31k/vim-colors-tayra'
+colorscheme tayra
+hi Normal guibg=NONE ctermbg=NONE
+
+call vundle#end()
+filetype plugin indent on
+
+
+" 自动添加文件头
+autocmd BufNewFile *.py,*.sh,*.c exec ":call SetComment()"
+func SetComment()
+    if expand("%:e") == 'py'
+        call setline(1, '#!/usr/bin/env python3')
+        call setline(2, '#coding=utf-8')
+    elseif expand("%:e") == 'sh'
+        call setline(1, '#!/bin/bash')
+    endif
+    normal G
+    normal o
+endfunc
+
+
+""""""""""自动补全""""""""""
+:inoremap ( ()<ESC>i
+:inoremap ) <c-r>=ClosePair(')')<CR>
+:inoremap { {}<ESC>i
+:inoremap } <c-r>=ClosePair('}')<CR>
+:inoremap [ []<ESC>i
+:inoremap ] <c-r>=ClosePair(']')<CR>
+:inoremap " ""<ESC>i
+:inoremap ' ''<ESC>i
+function! ClosePair(char)
+    if getline('.')[col('.') - 1] == a:char
+        return "\<Right>"
+    else
+        return a:char
+    endif
+endfunction
+:inoremap <C-o> <ESC>o
