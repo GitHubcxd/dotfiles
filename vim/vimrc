@@ -55,6 +55,10 @@ set tabstop=4
 set shiftwidth=4
 " 让 vim 把连续数量的空格视为一个空格
 set softtabstop=4
+" for js files, 2 spaces
+set autocmd Filetype javascript setlocal ts=2 sts=2 sw=2 expandtab
+" for go files, 4 spaces and no expandtab
+set autocmd Filetype go setlocal ts=4 sts=4 sw=4 noexpandtab
 " 显示 tab 和空格
 set list
 set listchars=tab:\|-,trail:=,extends:>,precedes:<
