@@ -141,6 +141,9 @@ Plugin 'the31k/vim-colors-tayra'
 colorscheme tayra
 hi Normal guibg=NONE ctermbg=NONE
 
+""""" vim-go """""
+Plugin 'fatih/vim-go'
+
 call vundle#end()
 filetype plugin indent on
 
